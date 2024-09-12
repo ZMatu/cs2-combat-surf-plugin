@@ -1,7 +1,4 @@
-using CounterStrikeSharp.API;
 using CounterStrikeSharp.API.Core;
-using CounterStrikeSharp.API.Core.Attributes.Registration;
-using Microsoft.Extensions.Logging;
 
 namespace CombatSurf;
 
@@ -14,37 +11,7 @@ public partial class CombatSurf
 
     // Events
     RegisterEventHandler<EventPlayerHurt>(OnPlayerHurt);
-    RegisterEventHandler<EventPlayerShoot>(OnPlayerShoot);
-    RegisterEventHandler<EventPlayerSpawn>(OnPlayerSpawn);
   }
-
-  private HookResult OnPlayerSpawn(EventPlayerSpawn @event, GameEventInfo info)
-  {
-    Logger.LogInformation("NICE1");
-    CCSPlayerController? player = @event.Userid;
-    if (player is null || !player.IsValid || !player.PlayerPawn.IsValid)
-      return HookResult.Continue;
-
-    player.PlayerPawn.Value!.HealthShotBoostExpirationTime = Server.CurrentTime + 1;
-    Utilities.SetStateChanged(player.PlayerPawn.Value, "CCSPlayerPawn", "m_flHealthShotBoostExpirationTime");
-
-    return HookResult.Continue;
-  }
-
-  private HookResult OnPlayerShoot(EventPlayerShoot @event, GameEventInfo info)
-  {
-    // @event!.Userid!.PlayerPawn!.Value!.CBodyComponent!.SceneNode.GetSkeletonInstance().Scale += 0.01f;
-    // Utilities.SetStateChanged(@event!.Userid.PlayerPawn.Value, "CBaseEntity", "m_CBodyComponent");
-
-    var Player = @event!.Userid!;
-
-
-    // DispatchEffect(new BloodlustEffect(Player, _bloodlustLength));
-    Logger.LogInformation("NICE2");
-
-    return HookResult.Continue;
-  }
-
 
   private void OnEntityCreated(CEntityInstance entity)
   {
