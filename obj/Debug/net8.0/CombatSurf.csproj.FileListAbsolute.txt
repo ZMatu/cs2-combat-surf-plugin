@@ -10,3 +10,4 @@
 /home/injurka/My/trick-plugins/combat-surf-plugin/obj/Debug/net8.0/refint/CombatSurf.dll
 /home/injurka/My/trick-plugins/combat-surf-plugin/obj/Debug/net8.0/CombatSurf.pdb
 /home/injurka/My/trick-plugins/combat-surf-plugin/obj/Debug/net8.0/ref/CombatSurf.dll
+/home/injurka/My/trick-plugins/combat-surf-plugin/obj/Debug/net8.0/CombatSurf.sourcelink.json

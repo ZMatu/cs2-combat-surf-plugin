@@ -13,7 +13,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("CombatSurf")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+b176a2a080c4cb893c7246a3049490ed3336025e")]
 [assembly: System.Reflection.AssemblyProductAttribute("CombatSurf")]
 [assembly: System.Reflection.AssemblyTitleAttribute("CombatSurf")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]
