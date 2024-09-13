@@ -1,6 +1,6 @@
 using CounterStrikeSharp.API;
 using CounterStrikeSharp.API.Core;
-using CounterStrikeSharp.API.Modules.Memory;
+using CounterStrikeSharp.API.Modules.Memory.DynamicFunctions;
 
 namespace CombatSurf;
 partial class CombatSurf
@@ -21,30 +21,31 @@ partial class CombatSurf
 
       if (_weapon.VData != null)
       {
+
+        _weapon.VData.AttackMovespeedFactor = 1;
+        _weapon.VData.CrosshairDeltaDistance = 1;
+        _weapon.VData.CrosshairMinDistance = 9999;
         _weapon.VData.MaxClip1 = 10;
         _weapon.VData.DefaultClip1 = 10;
       }
       _weapon.Clip1 = 10;
 
+      // m_glowColor
+
       Utilities.SetStateChanged(weapon.As<CCSWeaponBase>(), "CBasePlayerWeapon", "m_iClip1");
     });
   }
 
-  public void OneShootAwp()
+  public void OneShootAwp(DynamicHook hook)
   {
-    VirtualFunctions.CBaseEntity_TakeDamageOldFunc.Hook(h =>
+    var victim = hook.GetParam<CEntityInstance>(0);
+    var damageInfo = hook.GetParam<CTakeDamageInfo>(1);
+
+    // AWP weapon index 5
+    if (damageInfo.AmmoType == 5)
     {
-      var victim = h.GetParam<CEntityInstance>(0);
-      var damageInfo = h.GetParam<CTakeDamageInfo>(1);
-
-      // AWP weapon index 5
-      if (damageInfo.AmmoType == 5)
-      {
-        damageInfo.Damage = 1337;
-        damageInfo.ShouldBleed = false;
-      }
-
-      return HookResult.Continue;
-    }, HookMode.Pre);
+      damageInfo.Damage = 1337;
+      damageInfo.ShouldBleed = false;
+    }
   }
 }
