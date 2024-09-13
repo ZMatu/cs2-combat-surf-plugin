@@ -30,8 +30,6 @@ partial class CombatSurf
       }
       _weapon.Clip1 = 10;
 
-      // m_glowColor
-
       Utilities.SetStateChanged(weapon.As<CCSWeaponBase>(), "CBasePlayerWeapon", "m_iClip1");
     });
   }

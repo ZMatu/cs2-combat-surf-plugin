@@ -42,7 +42,7 @@ public partial class CombatSurf
 
   private void OnMapStart(string mapName)
   {
-    Server.PrecacheModel("characters\\models\\nozb1\\gangle_player_model\\gangle_player_model.vmdl");
+
   }
   private void OnGameServerSteamAPIActivated()
   {

@@ -30,12 +30,4 @@ partial class CombatSurf
     if (isSuccess)
       player.lastGun = weapon;
   }
-
-  [ConsoleCommand("model", "A")]
-  [CommandHelper(whoCanExecute: CommandUsage.CLIENT_ONLY)]
-  public void Model(CCSPlayerController client, CommandInfo _)
-  {
-
-    client.PlayerPawn.Value!.SetModel("characters\\models\\nozb1\\gangle_player_model\\gangle_player_model.vmdl");
-  }
 }
