@@ -21,6 +21,7 @@ public partial class CombatSurf
     RegisterEventHandler<EventPlayerConnectFull>(OnEventPlayerConnectFull);
     RegisterEventHandler<EventPlayerHurt>(OnEventPlayerHurt);
     RegisterEventHandler<EventRoundStart>(OnEventRoundStart);
+    RegisterEventHandler<EventPlayerSpawn>(OnEventPlayerSpawn);
 
     // VirtualFunctions
     VirtualFunctions.CBaseEntity_TakeDamageOldFunc.Hook(PreOnTakeDamage, HookMode.Pre);
@@ -31,6 +32,7 @@ public partial class CombatSurf
     DeregisterEventHandler<EventPlayerConnectFull>(OnEventPlayerConnectFull);
     DeregisterEventHandler<EventPlayerHurt>(OnEventPlayerHurt);
     DeregisterEventHandler<EventRoundStart>(OnEventRoundStart);
+    DeregisterEventHandler<EventPlayerSpawn>(OnEventPlayerSpawn);
     VirtualFunctions.CBaseEntity_TakeDamageOldFunc.Unhook(PreOnTakeDamage, HookMode.Pre);
   }
 
@@ -113,8 +115,20 @@ public partial class CombatSurf
     {
       var player = _playerManager.GetPlayer(client);
       _gunManager.GiveWeapon(client, player.lastGun);
-      client.PlayerPawn.Value!.Render = Color.FromArgb(255, 40, 0);
     }
+
+    return HookResult.Continue;
+  }
+
+  private HookResult OnEventPlayerSpawn(EventPlayerSpawn @event, GameEventInfo info)
+  {
+    CCSPlayerController client = @event.Userid!;
+
+    if (client == null || !client.IsValid || client.IsBot || !client.UserId.HasValue)
+      return HookResult.Continue;
+
+    client.PlayerPawn.Value!.Render = Color.FromArgb(255, 40, 0);
+    client.PlayerPawn.Value!.Render = Color.FromArgb(254, client.PlayerPawn.Value.Render.R, client.PlayerPawn.Value.Render.G, client.PlayerPawn.Value.Render.B);
 
     return HookResult.Continue;
   }
