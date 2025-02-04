@@ -21,7 +21,7 @@ public partial class CombatSurf
     RegisterEventHandler<EventPlayerConnectFull>(OnEventPlayerConnectFull);
     RegisterEventHandler<EventPlayerHurt>(OnEventPlayerHurt);
     RegisterEventHandler<EventRoundStart>(OnEventRoundStart);
-    RegisterEventHandler<EventPlayerSpawn>(PostOnEventPlayerSpawn, HookMode.Post);
+    RegisterEventHandler<EventPlayerSpawned>(PostOnEventPlayerSpawned, HookMode.Post);
     RegisterEventHandler<EventBulletImpact>(PreOnBulletImpact, HookMode.Pre);
     RegisterEventHandler<EventPlayerShoot>(OnEventPlayerShoot);
 
@@ -33,7 +33,7 @@ public partial class CombatSurf
     DeregisterEventHandler<EventPlayerConnectFull>(OnEventPlayerConnectFull);
     DeregisterEventHandler<EventPlayerHurt>(OnEventPlayerHurt);
     DeregisterEventHandler<EventRoundStart>(OnEventRoundStart);
-    DeregisterEventHandler<EventPlayerSpawn>(PostOnEventPlayerSpawn);
+    DeregisterEventHandler<EventPlayerSpawned>(PostOnEventPlayerSpawned);
     VirtualFunctions.CBaseEntity_TakeDamageOldFunc.Unhook(PreOnTakeDamage, HookMode.Pre);
   }
 
@@ -102,7 +102,7 @@ public partial class CombatSurf
     return HookResult.Continue;
   }
 
-  private HookResult PostOnEventPlayerSpawn(EventPlayerSpawn @event, GameEventInfo info)
+  private HookResult PostOnEventPlayerSpawned(EventPlayerSpawned @event, GameEventInfo info)
   {
     CCSPlayerController client = @event.Userid!;
 
@@ -112,13 +112,13 @@ public partial class CombatSurf
     var player = _playerManager.GetPlayer(client);
     if (player != null)
     {
-      // player.Client.PlayerPawn.Value!.Render = Color.FromArgb(255, 40, 0);
-      // player.Client.PlayerPawn.Value!.Render = Color.FromArgb(
-      //   254,
-      //   player.Client.PlayerPawn.Value!.Render.R,
-      //   player.Client.PlayerPawn.Value!.Render.G,
-      //   player.Client.PlayerPawn.Value!.Render.B
-      // );
+      player.Client.PlayerPawn.Value!.Render = Color.FromArgb(255, 40, 0);
+      player.Client.PlayerPawn.Value!.Render = Color.FromArgb(
+        254,
+        player.Client.PlayerPawn.Value!.Render.R,
+        player.Client.PlayerPawn.Value!.Render.G,
+        player.Client.PlayerPawn.Value!.Render.B
+      );
 
       player.SpawnAt = Server.CurrentTime;
       _gunManager.GivePlayerWeapon(player, player.LastSelectedGun);

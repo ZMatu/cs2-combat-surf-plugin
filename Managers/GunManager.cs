@@ -54,7 +54,7 @@ public class GunManager
 
     public bool GivePlayerWeapon(Player player, string weapon)
     {
-        if (!(player.Client is { PawnIsAlive: true, IsBot: false }) || player.SpawnAt == null)
+        if (!(player.Client is { PawnIsAlive: true, IsBot: false }))
         {
             player.Client.Print("Only alive players can call this command");
             return false;
