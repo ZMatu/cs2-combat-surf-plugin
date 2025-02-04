@@ -1,3 +1,4 @@
+using CounterStrikeSharp.API;
 using CounterStrikeSharp.API.Core;
 using Microsoft.Extensions.Logging;
 
@@ -53,13 +54,13 @@ public class GunManager
 
     public bool GivePlayerWeapon(Player player, string weapon)
     {
-        if (!(player.Client is { PawnIsAlive: true, IsBot: false }))
+        if (!(player.Client is { PawnIsAlive: true, IsBot: false }) || player.SpawnAt == null)
         {
             player.Client.Print("Only alive players can call this command");
             return false;
         }
 
-        if (player.allowSelectGun)
+        if ((player.SpawnAt - Server.CurrentTime) > 10.0f)
         {
             player.Client.Print("Selection time has expired");
             return false;

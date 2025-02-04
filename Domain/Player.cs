@@ -25,8 +25,8 @@ public class Player
   public readonly PlayerInfo Info;
 
   // Guns
-  public string lastGun { get; set; } = "weapon_awp";
-  public bool allowSelectGun { get; set; } = true;
+  public string LastSelectedGun { get; set; } = "weapon_awp";
+  public float? SpawnAt { get; set; } = null;
 
   public CCSPlayerController Client => Utilities.GetPlayerFromSlot(Info.Slot)!;
 }

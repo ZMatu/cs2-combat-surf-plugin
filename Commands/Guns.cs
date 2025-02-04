@@ -14,15 +14,9 @@ partial class CombatSurf
     var weapon = "weapon_nova";
     var player = _playerManager.GetPlayer(client);
 
-    if (player.allowSelectGun)
-    {
-      client.Print("Selection time has expired");
-      return;
-    }
-
     var isSuccess = _gunManager.GivePlayerWeapon(player, weapon);
     if (isSuccess)
-      player.lastGun = weapon;
+      player.LastSelectedGun = weapon;
   }
 
   [ConsoleCommand("awp", "Give awp weapon")]
@@ -34,6 +28,6 @@ partial class CombatSurf
 
     var isSuccess = _gunManager.GivePlayerWeapon(player, weapon);
     if (isSuccess)
-      player.lastGun = weapon;
+      player.LastSelectedGun = weapon;
   }
 }

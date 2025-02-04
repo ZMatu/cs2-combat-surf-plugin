@@ -1,5 +1,4 @@
 using System.Drawing;
-using System.Timers;
 using CounterStrikeSharp.API;
 using CounterStrikeSharp.API.Core;
 using CounterStrikeSharp.API.Modules.Memory;
@@ -22,7 +21,7 @@ public partial class CombatSurf
     RegisterEventHandler<EventPlayerConnectFull>(OnEventPlayerConnectFull);
     RegisterEventHandler<EventPlayerHurt>(OnEventPlayerHurt);
     RegisterEventHandler<EventRoundStart>(OnEventRoundStart);
-    RegisterEventHandler<EventPlayerSpawn>(OnEventPlayerSpawn);
+    RegisterEventHandler<EventPlayerSpawn>(PostOnEventPlayerSpawn, HookMode.Post);
     RegisterEventHandler<EventBulletImpact>(PreOnBulletImpact, HookMode.Pre);
     RegisterEventHandler<EventPlayerShoot>(OnEventPlayerShoot);
 
@@ -34,7 +33,7 @@ public partial class CombatSurf
     DeregisterEventHandler<EventPlayerConnectFull>(OnEventPlayerConnectFull);
     DeregisterEventHandler<EventPlayerHurt>(OnEventPlayerHurt);
     DeregisterEventHandler<EventRoundStart>(OnEventRoundStart);
-    DeregisterEventHandler<EventPlayerSpawn>(OnEventPlayerSpawn);
+    DeregisterEventHandler<EventPlayerSpawn>(PostOnEventPlayerSpawn);
     VirtualFunctions.CBaseEntity_TakeDamageOldFunc.Unhook(PreOnTakeDamage, HookMode.Pre);
   }
 
@@ -65,7 +64,6 @@ public partial class CombatSurf
 
     if (@event.Weapon == "awp" && @event.Health == 0)
     {
-      ExplosionEffects(player, player.AbsOrigin!);
       SetHitEffetct(attacker);
     }
 
@@ -83,12 +81,12 @@ public partial class CombatSurf
   {
     CCSPlayerController? client = @event.Userid;
 
-    if (client == null || !client.IsValid || client.IsBot || !client.UserId.HasValue)
+    if (!ClientIsValid(client))
       return HookResult.Continue;
 
     var eventMsg = new EventOnPlayerConnect
     {
-      Name = client.PlayerName,
+      Name = client!.PlayerName,
       Slot = client.Slot,
       SteamId = client.SteamID.ToString()
     };
@@ -104,27 +102,27 @@ public partial class CombatSurf
     return HookResult.Continue;
   }
 
-  private HookResult OnEventPlayerSpawn(EventPlayerSpawn @event, GameEventInfo info)
+  private HookResult PostOnEventPlayerSpawn(EventPlayerSpawn @event, GameEventInfo info)
   {
     CCSPlayerController client = @event.Userid!;
 
-    if (client == null || !client.IsValid || client.IsBot || !client.UserId.HasValue)
+    if (!ClientIsValidAndAlive(client))
       return HookResult.Continue;
 
     var player = _playerManager.GetPlayer(client);
+    if (player != null)
+    {
+      player.SpawnAt = Server.CurrentTime;
+      player.Client.PlayerPawn.Value!.Render = Color.FromArgb(255, 40, 0);
+      player.Client.PlayerPawn.Value!.Render = Color.FromArgb(
+        254,
+        player.Client.PlayerPawn.Value!.Render.R,
+        player.Client.PlayerPawn.Value!.Render.G,
+        player.Client.PlayerPawn.Value!.Render.B
+      );
 
-    player.allowSelectGun = true;
-    player.Client.PlayerPawn.Value!.Render = Color.FromArgb(255, 40, 0);
-    player.Client.PlayerPawn.Value!.Render = Color.FromArgb(
-      254,
-      player.Client.PlayerPawn.Value!.Render.R,
-      player.Client.PlayerPawn.Value!.Render.G,
-      player.Client.PlayerPawn.Value!.Render.B
-    );
-
-    _gunManager.GiveWeapon(client, player.lastGun);
-
-    AddTimer(10.0f, () => player.allowSelectGun = false);
+      var _ = _gunManager.GivePlayerWeapon(player, player.LastSelectedGun);
+    }
 
     return HookResult.Continue;
   }
@@ -145,15 +143,11 @@ public partial class CombatSurf
   public HookResult PreOnBulletImpact(EventBulletImpact @event, GameEventInfo info)
   {
     CCSPlayerController client = @event.Userid!;
-    var pawn = client.PlayerPawn.Value;
 
-    if (client == null || pawn == null || !client.IsValid || client.IsBot || !client.UserId.HasValue)
+    if (!ClientIsValidAndAlive(client))
       return HookResult.Continue;
 
     Vector BulletDestination = new Vector(@event.X, @event.Y, @event.Z);
-    // Not needed
-    // Vector PlayerPosition = client.Pawn.Value!.AbsOrigin!;
-    // Vector BulletOrigin = new Vector(PlayerPosition.X, PlayerPosition.Y, PlayerPosition.Z + 64);
 
     var weapon = client.Pawn.Value!.WeaponServices?.ActiveWeapon?.Value;
     if (weapon?.DesignerName != "weapon_awp")

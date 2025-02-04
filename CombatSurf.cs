@@ -11,13 +11,11 @@ public partial class CombatSurf : BasePlugin, IPluginConfig<CombatSurfConfig>
   public override string ModuleName => "CombatSurf";
   public override string ModuleDescription => "CombatSurf";
   public override string ModuleAuthor => "injurka";
-  public override string ModuleVersion => "0.2.4";
-
+  public override string ModuleVersion => "0.2.7";
 
   private static PlayerManager _playerManager = new();
   private static GunManager _gunManager = new();
   private static EventManager _eventsManager = new();
-
 
   internal static ILogger? _logger;
 

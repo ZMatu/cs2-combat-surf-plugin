@@ -141,7 +141,16 @@ partial class CombatSurf
 
   public static bool ClientIsValidAndAlive(CCSPlayerController? client)
   {
-    return client != null && client is { IsValid: true, IsBot: false, PawnIsAlive: true };
+    return client != null
+      && client is { IsValid: true, IsBot: false, PawnIsAlive: true }
+      && client.UserId.HasValue;
+  }
+
+  public static bool ClientIsValid(CCSPlayerController? client)
+  {
+    return client != null
+      && client is { IsValid: true, IsBot: false }
+      && client.UserId.HasValue;
   }
 
   public void SetHitEffetct(CCSPlayerController client)

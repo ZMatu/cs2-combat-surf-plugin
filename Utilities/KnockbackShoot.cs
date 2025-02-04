@@ -1,7 +1,5 @@
-using CounterStrikeSharp.API;
 using CounterStrikeSharp.API.Core;
 using Vector = CounterStrikeSharp.API.Modules.Utils.Vector;
-using QAngle = CounterStrikeSharp.API.Modules.Utils.QAngle;
 
 namespace CombatSurf;
 partial class CombatSurf
@@ -35,7 +33,6 @@ partial class CombatSurf
 
       // Применяем новую скорость
       pawn.Teleport(null, null, newVelocity);
-      KnockbackEffects(player, impactPos);
     }
   }
 
