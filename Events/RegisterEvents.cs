@@ -112,16 +112,19 @@ public partial class CombatSurf
     var player = _playerManager.GetPlayer(client);
     if (player != null)
     {
-      player.SpawnAt = Server.CurrentTime;
-      player.Client.PlayerPawn.Value!.Render = Color.FromArgb(255, 40, 0);
-      player.Client.PlayerPawn.Value!.Render = Color.FromArgb(
-        254,
-        player.Client.PlayerPawn.Value!.Render.R,
-        player.Client.PlayerPawn.Value!.Render.G,
-        player.Client.PlayerPawn.Value!.Render.B
-      );
+      // player.Client.PlayerPawn.Value!.Render = Color.FromArgb(255, 40, 0);
+      // player.Client.PlayerPawn.Value!.Render = Color.FromArgb(
+      //   254,
+      //   player.Client.PlayerPawn.Value!.Render.R,
+      //   player.Client.PlayerPawn.Value!.Render.G,
+      //   player.Client.PlayerPawn.Value!.Render.B
+      // );
 
-      var _ = _gunManager.GivePlayerWeapon(player, player.LastSelectedGun);
+      Server.NextFrameAsync(() =>
+        {
+          player.SpawnAt = Server.CurrentTime;
+          _gunManager.GivePlayerWeapon(player, player.LastSelectedGun);
+        });
     }
 
     return HookResult.Continue;

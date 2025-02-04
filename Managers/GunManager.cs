@@ -60,7 +60,7 @@ public class GunManager
             return false;
         }
 
-        if ((player.SpawnAt - Server.CurrentTime) > 10.0f)
+        if ((Server.CurrentTime - player.SpawnAt) >= 10.0f)
         {
             player.Client.Print("Selection time has expired");
             return false;
