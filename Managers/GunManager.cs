@@ -5,8 +5,6 @@ namespace CombatSurf.Managers;
 
 public class GunManager
 {
-    public bool isAllowSelect { get; set; } = true;
-
     public void RemoveWeapon(CCSPlayerController client, gear_slot_t slot)
     {
         foreach (var weapon in client!.PlayerPawn.Value!.WeaponServices!.MyWeapons)
@@ -28,9 +26,6 @@ public class GunManager
                 CCSWeaponBaseVData? weaponData = weapon.Value.As<CCSWeaponBase>().VData;
 
                 if (weaponData == null) continue;
-
-                CombatSurf._logger!.LogInformation($"AAAAAAAA {weaponData.GearSlot == slot} {weaponData.Name}");
-
                 if (weaponData.GearSlot == slot)
                     weapon.Value.Remove();
             }
@@ -50,14 +45,28 @@ public class GunManager
             return false;
         }
 
-        if (!isAllowSelect)
+        RemoveWeapon(client, gear_slot_t.GEAR_SLOT_RIFLE);
+        client.GiveNamedItem(weapon);
+
+        return true;
+    }
+
+    public bool GivePlayerWeapon(Player player, string weapon)
+    {
+        if (!(player.Client is { PawnIsAlive: true, IsBot: false }))
         {
-            client.Print("Selection time has expired");
+            player.Client.Print("Only alive players can call this command");
             return false;
         }
 
-        RemoveWeapon(client, gear_slot_t.GEAR_SLOT_RIFLE);
-        client.GiveNamedItem(weapon);
+        if (player.allowSelectGun)
+        {
+            player.Client.Print("Selection time has expired");
+            return false;
+        }
+
+        RemoveWeapon(player.Client, gear_slot_t.GEAR_SLOT_RIFLE);
+        player.Client.GiveNamedItem(weapon);
 
         return true;
     }

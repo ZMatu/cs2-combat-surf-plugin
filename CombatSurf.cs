@@ -11,7 +11,7 @@ public partial class CombatSurf : BasePlugin, IPluginConfig<CombatSurfConfig>
   public override string ModuleName => "CombatSurf";
   public override string ModuleDescription => "CombatSurf";
   public override string ModuleAuthor => "injurka";
-  public override string ModuleVersion => "0.0.4";
+  public override string ModuleVersion => "0.2.4";
 
 
   private static PlayerManager _playerManager = new();

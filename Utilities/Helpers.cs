@@ -4,6 +4,8 @@ using CounterStrikeSharp.API.Modules.Entities;
 using System.Reflection;
 using System.Runtime.InteropServices;
 using System.Text.RegularExpressions;
+using Vector = CounterStrikeSharp.API.Modules.Utils.Vector;
+using QAngle = CounterStrikeSharp.API.Modules.Utils.QAngle;
 
 namespace CombatSurf;
 
@@ -147,5 +149,19 @@ partial class CombatSurf
     client.PlayerPawn.Value!.HealthShotBoostExpirationTime = Server.CurrentTime + 1;
     Utilities.SetStateChanged(client.PlayerPawn.Value, "CCSPlayerPawn", "m_flHealthShotBoostExpirationTime");
     client.ExecuteClientCommand($"play sounds\\weapons\\flashbang\\flashbang_explode1_distant.vsnd_c");
+  }
+
+  public Vector QAngleToVector(QAngle angles)
+  {
+    float sy = MathF.Sin(angles.Y * MathF.PI / 180f);
+    float cy = MathF.Cos(angles.Y * MathF.PI / 180f);
+    float sp = MathF.Sin(angles.X * MathF.PI / 180f);
+    float cp = MathF.Cos(angles.X * MathF.PI / 180f);
+
+    return new Vector(
+        cp * cy,
+        cp * sy,
+        -sp
+    );
   }
 }

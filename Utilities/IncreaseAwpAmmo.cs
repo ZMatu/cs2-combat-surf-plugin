@@ -16,19 +16,21 @@ partial class CombatSurf
 
       if (!weapon.IsValid) return;
 
-      CCSWeaponBase _weapon = weapon.As<CCSWeaponBase>();
-      if (_weapon == null) return;
+      var awp = weapon.As<CWeaponAWP>();
 
-      if (_weapon.VData != null)
+      if (weapon == null) return;
+
+      if (awp.VData != null)
       {
-
-        _weapon.VData.AttackMovespeedFactor = 1;
-        _weapon.VData.CrosshairDeltaDistance = 1;
-        _weapon.VData.CrosshairMinDistance = 9999;
-        _weapon.VData.MaxClip1 = 10;
-        _weapon.VData.DefaultClip1 = 10;
+        awp.VData.Range = 100000.0f;
+        awp.VData.RangeModifier = 1.0f;
+        awp.VData.AttackMovespeedFactor = 1;
+        awp.VData.CrosshairDeltaDistance = 1;
+        awp.VData.CrosshairMinDistance = 9999;
+        awp.VData.MaxClip1 = 10;
+        awp.VData.DefaultClip1 = 10;
       }
-      _weapon.Clip1 = 10;
+      awp.Clip1 = 10;
 
       Utilities.SetStateChanged(weapon.As<CCSWeaponBase>(), "CBasePlayerWeapon", "m_iClip1");
     });

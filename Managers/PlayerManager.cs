@@ -16,7 +16,6 @@ public class PlayerManager
     var playerToRemove = _players.FirstOrDefault(p => p.Client.Index == client.Index);
     if (playerToRemove != null)
     {
-
       _players.Remove(playerToRemove);
     }
   }
