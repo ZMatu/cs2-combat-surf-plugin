@@ -106,7 +106,7 @@ public partial class CombatSurf
   {
     CCSPlayerController client = @event.Userid!;
 
-    if (!ClientIsValidAndAlive(client))
+    if (!ClientIsValid(client))
       return HookResult.Continue;
 
     var player = _playerManager.GetPlayer(client);
