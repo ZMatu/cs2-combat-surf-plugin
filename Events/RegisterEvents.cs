@@ -120,11 +120,8 @@ public partial class CombatSurf
       //   player.Client.PlayerPawn.Value!.Render.B
       // );
 
-      Server.NextFrameAsync(() =>
-        {
-          player.SpawnAt = Server.CurrentTime;
-          _gunManager.GivePlayerWeapon(player, player.LastSelectedGun);
-        });
+      player.SpawnAt = Server.CurrentTime;
+      _gunManager.GivePlayerWeapon(player, player.LastSelectedGun);
     }
 
     return HookResult.Continue;
