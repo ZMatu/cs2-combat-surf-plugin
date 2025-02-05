@@ -20,8 +20,8 @@ public partial class CombatSurf
     // Events
     RegisterEventHandler<EventPlayerConnectFull>(OnEventPlayerConnectFull);
     RegisterEventHandler<EventPlayerHurt>(OnEventPlayerHurt);
-    RegisterEventHandler<EventRoundStart>(OnEventRoundStart);
-    RegisterEventHandler<EventPlayerSpawned>(PostOnEventPlayerSpawned, HookMode.Post);
+    RegisterEventHandler<EventRoundStart>(PreOnEventRoundStart, HookMode.Pre);
+    RegisterEventHandler<EventPlayerSpawned>(OnEventPlayerSpawned);
     RegisterEventHandler<EventBulletImpact>(PreOnBulletImpact, HookMode.Pre);
     RegisterEventHandler<EventPlayerShoot>(OnEventPlayerShoot);
 
@@ -32,8 +32,8 @@ public partial class CombatSurf
   {
     DeregisterEventHandler<EventPlayerConnectFull>(OnEventPlayerConnectFull);
     DeregisterEventHandler<EventPlayerHurt>(OnEventPlayerHurt);
-    DeregisterEventHandler<EventRoundStart>(OnEventRoundStart);
-    DeregisterEventHandler<EventPlayerSpawned>(PostOnEventPlayerSpawned);
+    DeregisterEventHandler<EventRoundStart>(PreOnEventRoundStart);
+    DeregisterEventHandler<EventPlayerSpawned>(OnEventPlayerSpawned);
     VirtualFunctions.CBaseEntity_TakeDamageOldFunc.Unhook(PreOnTakeDamage, HookMode.Pre);
   }
 
@@ -95,31 +95,25 @@ public partial class CombatSurf
     return HookResult.Continue;
   }
 
-  private HookResult OnEventRoundStart(EventRoundStart @event, GameEventInfo info)
+  private HookResult PreOnEventRoundStart(EventRoundStart @event, GameEventInfo info)
   {
-    AddTimer(1.0f, SetupServerSettings, TimerFlags.STOP_ON_MAPCHANGE);
+    AddTimer(1.0f, SetupServerSettings);
 
     return HookResult.Continue;
   }
 
-  private HookResult PostOnEventPlayerSpawned(EventPlayerSpawned @event, GameEventInfo info)
+  private HookResult OnEventPlayerSpawned(EventPlayerSpawned @event, GameEventInfo info)
   {
     CCSPlayerController client = @event.Userid!;
 
     if (!ClientIsValid(client))
       return HookResult.Continue;
 
+    ColorizeModel(client);
+
     var player = _playerManager.GetPlayer(client);
     if (player != null)
     {
-      player.Client.PlayerPawn.Value!.Render = Color.FromArgb(255, 40, 0);
-      player.Client.PlayerPawn.Value!.Render = Color.FromArgb(
-        254,
-        player.Client.PlayerPawn.Value!.Render.R,
-        player.Client.PlayerPawn.Value!.Render.G,
-        player.Client.PlayerPawn.Value!.Render.B
-      );
-
       player.SpawnAt = Server.CurrentTime;
       _gunManager.GivePlayerWeapon(player, player.LastSelectedGun);
     }

@@ -1,3 +1,4 @@
+using System.Drawing;
 using CounterStrikeSharp.API;
 using CounterStrikeSharp.API.Core;
 using CounterStrikeSharp.API.Modules.Entities;
@@ -6,6 +7,7 @@ using System.Runtime.InteropServices;
 using System.Text.RegularExpressions;
 using Vector = CounterStrikeSharp.API.Modules.Utils.Vector;
 using QAngle = CounterStrikeSharp.API.Modules.Utils.QAngle;
+
 
 namespace CombatSurf;
 
@@ -158,6 +160,17 @@ partial class CombatSurf
     client.PlayerPawn.Value!.HealthShotBoostExpirationTime = Server.CurrentTime + 1;
     Utilities.SetStateChanged(client.PlayerPawn.Value, "CCSPlayerPawn", "m_flHealthShotBoostExpirationTime");
     client.ExecuteClientCommand($"play sounds\\weapons\\flashbang\\flashbang_explode1_distant.vsnd_c");
+  }
+
+  public void ColorizeModel(CCSPlayerController client)
+  {
+    client.PlayerPawn.Value!.Render = Color.FromArgb(255, 40, 0);
+    client.PlayerPawn.Value!.Render = Color.FromArgb(
+      254,
+      client.PlayerPawn.Value!.Render.R,
+      client.PlayerPawn.Value!.Render.G,
+      client.PlayerPawn.Value!.Render.B
+    );
   }
 
   public Vector QAngleToVector(QAngle angles)
