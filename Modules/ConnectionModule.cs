@@ -30,20 +30,20 @@ public class ConnectionModule(PlayerManager playerManager)
                 // };
 
                 // int userId = await _database.ExecuteAsync(query, parameters);
-
-                var player = new Player(e.Slot, e.SteamId, e.Name);
-                _playerManager.AddPlayer(player);
-
-                Server.NextFrame(() =>
-                {
-                    player.Client.Print($" {ChatColors.Gold}Здравствуй воин!");
-                    player.Client.Print($" {ChatColors.Grey}To select a weapon you can write: {ChatColors.Purple} !awp {ChatColors.White} / {ChatColors.Purple} !nova");
-                });
             }
             catch (Exception ex)
             {
                 Console.WriteLine(ex);
             }
+        });
+
+        var player = new Player(e.Slot, e.SteamId, e.Name);
+        _playerManager.AddPlayer(player);
+
+        Server.NextFrame(() =>
+        {
+            player.Client.Print($" {ChatColors.Gold}Здравствуй воин!");
+            player.Client.Print($" {ChatColors.Grey}To select a weapon you can write: {ChatColors.Purple} !awp {ChatColors.White} / {ChatColors.Purple} !nova");
         });
     }
 
