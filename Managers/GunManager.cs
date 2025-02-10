@@ -24,11 +24,22 @@ public class GunManager
 
             try
             {
-                CCSWeaponBaseVData? weaponData = weapon.Value.As<CCSWeaponBase>().VData;
+                CCSWeaponBase? weaponData = weapon.Value.As<CCSWeaponBase>();
 
-                if (weaponData == null) continue;
-                if (weaponData.GearSlot == slot)
-                    weapon.Value.Remove();
+                if (weaponData.VData == null) continue;
+                if (weaponData.VData.GearSlot == slot)
+                {
+                    client.PlayerPawn.Value.WeaponServices.ActiveWeapon.Raw = weapon.Raw;
+                    client.DropActiveWeapon();
+
+                    Server.NextFrame(() =>
+                    {
+                        if (weaponData != null && weaponData.IsValid)
+                        {
+                            weaponData.AcceptInput("Kill");
+                        }
+                    });
+                }
             }
             catch (Exception ex)
             {

@@ -21,7 +21,7 @@ public partial class CombatSurf
     RegisterEventHandler<EventPlayerConnectFull>(OnEventPlayerConnectFull);
     RegisterEventHandler<EventPlayerHurt>(OnEventPlayerHurt);
     RegisterEventHandler<EventRoundStart>(PreOnEventRoundStart, HookMode.Pre);
-    RegisterEventHandler<EventPlayerSpawned>(OnEventPlayerSpawned);
+    RegisterEventHandler<EventPlayerSpawn>(OnEventPlayerSpawn);
     RegisterEventHandler<EventBulletImpact>(PreOnBulletImpact, HookMode.Pre);
     RegisterEventHandler<EventPlayerShoot>(OnEventPlayerShoot);
 
@@ -33,7 +33,7 @@ public partial class CombatSurf
     DeregisterEventHandler<EventPlayerConnectFull>(OnEventPlayerConnectFull);
     DeregisterEventHandler<EventPlayerHurt>(OnEventPlayerHurt);
     DeregisterEventHandler<EventRoundStart>(PreOnEventRoundStart);
-    DeregisterEventHandler<EventPlayerSpawned>(OnEventPlayerSpawned);
+    DeregisterEventHandler<EventPlayerSpawn>(OnEventPlayerSpawn);
     VirtualFunctions.CBaseEntity_TakeDamageOldFunc.Unhook(PreOnTakeDamage, HookMode.Pre);
   }
 
@@ -102,21 +102,24 @@ public partial class CombatSurf
     return HookResult.Continue;
   }
 
-  private HookResult OnEventPlayerSpawned(EventPlayerSpawned @event, GameEventInfo info)
+  private HookResult OnEventPlayerSpawn(EventPlayerSpawn @event, GameEventInfo info)
   {
     CCSPlayerController client = @event.Userid!;
 
     if (!ClientIsValid(client))
       return HookResult.Continue;
 
-    ColorizeModel(client);
-
-    var player = _playerManager.GetPlayer(client);
-    if (player != null)
+    Server.NextFrame(() =>
     {
-      player.SpawnAt = Server.CurrentTime;
-      _gunManager.GivePlayerWeapon(player, player.LastSelectedGun);
-    }
+      ColorizeModel(client);
+
+      var player = _playerManager.GetPlayer(client);
+      if (player != null)
+      {
+        player.SpawnAt = Server.CurrentTime;
+        _gunManager.GivePlayerWeapon(player, player.LastSelectedGun);
+      }
+    });
 
     return HookResult.Continue;
   }
